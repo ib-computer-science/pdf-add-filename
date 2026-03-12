@@ -16,35 +16,24 @@ git clone https://github.com/YOUR_USERNAME/pdf-add-filename.git
 cd pdf-add-filename
 ```
 
-### 2. Create a virtual environment and install dependencies
+### 2. Install
 
 ```bash
-python3 -m venv .venv
-.venv/bin/pip install --require-hashes -r requirements.txt
+make install
 ```
 
-> **Note on hash pinning:** `requirements.txt` pins PyMuPDF to an exact version and its SHA-256 wheel hash. `--require-hashes` makes pip verify the downloaded file matches that hash before installing, guarding against a tampered package on PyPI or a compromised mirror (supply-chain attack).
->
-> **Implications to be aware of:**
-> - The hash in `requirements.txt` is for the **Linux x86_64** wheel. If you install on a different platform (macOS, Windows, or another CPU architecture), pip will download a different wheel and the hash will not match — installation will fail. To support other platforms, add their hashes too (run `pip download pymupdf==1.27.2 --no-deps` on each target platform, then `pip hash` the resulting wheel, and append each `--hash=sha256:…` to the same line in `requirements.txt`).
-> - When upgrading PyMuPDF, you must update the pinned version *and* replace the hash(es).
+This will:
+1. Create a `.venv` virtual environment and install dependencies into it.
+2. Make the launcher script executable.
+3. Create a symlink at `~/.local/bin/pdf-add-filename` pointing to the script.
 
-### 3. Make the launcher script executable
+To place the symlink somewhere else, pass `BINDIR`:
 
 ```bash
-chmod +x pdf-add-filename
+make install BINDIR=/usr/local/bin
 ```
 
-### 4. Add the program to your PATH
-
-The recommended approach is to create a symlink in `~/.local/bin`, which is on `$PATH` by default on most modern Linux distributions (Debian, Ubuntu, Fedora, etc.):
-
-```bash
-mkdir -p ~/.local/bin
-ln -s "$PWD/pdf-add-filename" ~/.local/bin/pdf-add-filename
-```
-
-Verify that `~/.local/bin` is on your `$PATH`:
+Verify that the symlink's directory is on your `$PATH`:
 
 ```bash
 echo $PATH | grep -o '[^:]*local/bin[^:]*'
@@ -63,6 +52,12 @@ pdf-add-filename input.pdf output.pdf
 ```
 
 > **Note:** The launcher script automatically uses the `.venv` inside the cloned repository. You do not need to activate the virtual environment manually.
+
+> **Note on hash pinning:** `requirements.txt` pins PyMuPDF to an exact version and its SHA-256 wheel hash. `--require-hashes` makes pip verify the downloaded file matches that hash before installing, guarding against a tampered package on PyPI or a compromised mirror (supply-chain attack).
+>
+> **Implications to be aware of:**
+> - The hash in `requirements.txt` is for the **Linux x86_64** wheel. If you install on a different platform (macOS, Windows, or another CPU architecture), pip will download a different wheel and the hash will not match — installation will fail. To support other platforms, add their hashes too (run `pip download pymupdf==1.27.2 --no-deps` on each target platform, then `pip hash` the resulting wheel, and append each `--hash=sha256:…` to the same line in `requirements.txt`).
+> - When upgrading PyMuPDF, you must update the pinned version *and* replace the hash(es).
 
 ## Usage
 
@@ -120,12 +115,17 @@ pdf-add-filename report.pdf report-labelled.pdf --color "#ff8800"
 
 ## Uninstalling
 
-Remove the symlink and the cloned directory:
+```bash
+make uninstall
+```
+
+If you installed to a custom directory, pass the same `BINDIR` value used during install:
 
 ```bash
-rm ~/.local/bin/pdf-add-filename
-rm -rf /path/to/pdf-add-filename
+make uninstall BINDIR=/usr/local/bin
 ```
+
+Then delete the cloned directory to fully remove the program.
 
 ## License
 
