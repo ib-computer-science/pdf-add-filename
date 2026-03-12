@@ -1,3 +1,9 @@
 #!/usr/bin/env bash
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-exec "$SCRIPT_DIR/.venv/bin/python3" "$SCRIPT_DIR/pdf_add_filename.py" "$@"
+PYTHON="$SCRIPT_DIR/.venv/bin/python3"
+if [[ ! -x "$PYTHON" ]]; then
+    echo "Error: venv not found. Run:" >&2
+    echo "  python -m venv \"$SCRIPT_DIR/.venv\" && \"$SCRIPT_DIR/.venv/bin/pip\" install -r \"$SCRIPT_DIR/requirements.txt\"" >&2
+    exit 1
+fi
+exec "$PYTHON" "$SCRIPT_DIR/pdf_add_filename.py" "$@"
