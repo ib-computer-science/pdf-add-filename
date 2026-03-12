@@ -75,9 +75,10 @@ def parse_margin(margin_str):
         if s.endswith("pt"):
             multiplier = 1
 
-        if multiplier:
-            numerical_part = float(s[:-2])
-            return multiplier * numerical_part
+        if not multiplier:
+            raise ValueError
+        numerical_part = float(s[:-2])
+        return multiplier * numerical_part
     except ValueError:
         raise ValueError(f"Cannot parse margin '{margin_str}'. Examples: 1cm, 10mm, 0.5in, 28pt")
 
