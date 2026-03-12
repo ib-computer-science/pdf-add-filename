@@ -1,1 +1,2 @@
-pymupdf>=1.23
+pymupdf==1.27.2 \
+    --hash=sha256:917f4dd52daea504d5c60e1430c17d637b5014a43e66d068b4b356effe087dba

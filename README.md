@@ -20,8 +20,14 @@ cd pdf-add-filename
 
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
+.venv/bin/pip install --require-hashes -r requirements.txt
 ```
+
+> **Note on hash pinning:** `requirements.txt` pins PyMuPDF to an exact version and its SHA-256 wheel hash. `--require-hashes` makes pip verify the downloaded file matches that hash before installing, guarding against a tampered package on PyPI or a compromised mirror (supply-chain attack).
+>
+> **Implications to be aware of:**
+> - The hash in `requirements.txt` is for the **Linux x86_64** wheel. If you install on a different platform (macOS, Windows, or another CPU architecture), pip will download a different wheel and the hash will not match — installation will fail. To support other platforms, add their hashes too (run `pip download pymupdf==1.27.2 --no-deps` on each target platform, then `pip hash` the resulting wheel, and append each `--hash=sha256:…` to the same line in `requirements.txt`).
+> - When upgrading PyMuPDF, you must update the pinned version *and* replace the hash(es).
 
 ### 3. Make the launcher script executable
 
